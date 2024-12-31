@@ -1,8 +1,9 @@
 const { Sequelize } = require("sequelize");
 const dotenv = require("dotenv");
+
 dotenv.config();
 let connection;
-exports.getConnection = () => {
+getConnection = () => {
   if (!connection) {
     connection = new Sequelize({
       dialect: "mysql",
@@ -19,3 +20,11 @@ exports.getConnection = () => {
   }
   return connection;
 };
+connection = getConnection();
+module.exports = connection;
+// Import models
+const User = require("../models/user");
+const Group = require("../models/group");
+const groupMembers = require("../models/groupMembers");
+
+User.belongsToMany(Group, { through: groupMembers });
