@@ -5,7 +5,9 @@ dotenv.config();
 const express = require("express");
 const app = express();
 const connection = require("./database/config");
-
+const multer = require("multer");
+const upload = multer();
+app.use(upload.any());
 const PORT = process.env.SERVER_PORT || 5000;
 app.get("/", (req, res) => {
   res.send("Hello world!");
