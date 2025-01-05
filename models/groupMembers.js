@@ -1,5 +1,5 @@
-const connectoin = require("../database/config");
-const GroupMembers = connectoin.define(
+const connection = require("../database/config");
+const GroupMembers = connection.define(
   "groupMembers",
   {},
   { tableName: "group_members" },
