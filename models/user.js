@@ -11,10 +11,16 @@ const User = connection.define(
       allowNull: false,
       required: true,
     },
-    username: {
+    name: {
       type: DataTypes.STRING,
       required: true,
       allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      required: true,
+      allowNull: false,
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
