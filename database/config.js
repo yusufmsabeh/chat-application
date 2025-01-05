@@ -26,5 +26,18 @@ module.exports = connection;
 const User = require("../models/user");
 const Group = require("../models/group");
 const groupMembers = require("../models/groupMembers");
+const Message = require("../models/message");
 
 User.belongsToMany(Group, { through: groupMembers });
+User.hasMany(Message, {
+  foreignKey: "sender_id",
+  // allowNull: false,
+});
+User.hasMany(Message, {
+  foreignKey: "receiver_id",
+  // allowNull: true,
+});
+Group.hasMany(Message, {
+  foreignKey: "group_id",
+  // allowNull: true,
+});
