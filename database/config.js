@@ -1,7 +1,5 @@
 const { Sequelize } = require("sequelize");
-const dotenv = require("dotenv");
 
-dotenv.config();
 let connection;
 getConnection = () => {
   if (!connection) {
