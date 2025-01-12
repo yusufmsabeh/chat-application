@@ -25,6 +25,7 @@ const User = require("../models/user");
 const Group = require("../models/group");
 const groupMembers = require("../models/groupMembers");
 const Message = require("../models/message");
+const Session = require("../models/session");
 
 User.belongsToMany(Group, { through: groupMembers });
 User.hasMany(Message, {
