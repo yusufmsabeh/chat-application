@@ -1,7 +1,9 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
+const {
+  getOrCreateSession,
+  deleteSession,
+} = require("../services/sessions_management");
 exports.postSignup = async (req, res) => {
   try {
     const { name, email, password } = req.body || {};
@@ -74,16 +76,9 @@ exports.postLogin = async (req, res) => {
         code: 401,
         message: "invalid email or password",
       });
-    const token = jwt.sign(
-      {
-        userId: user.id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "30d",
-        algorithm: "HS256",
-      },
-    );
+    console.log(user);
+    const token = await getOrCreateSession(user.ID);
+
     res.status(200).json({
       status: "success",
       code: 200,
@@ -96,6 +91,25 @@ exports.postLogin = async (req, res) => {
     });
   } catch (e) {
     console.error(e);
+    res.status(500).json({
+      status: "error",
+      code: 500,
+      message: "Something went wrong",
+    });
+  }
+};
+
+exports.postLogout = async (req, res) => {
+  try {
+    const userId = req.user.ID;
+    await deleteSession(userId);
+    res.status(200).json({
+      status: "success",
+      code: 200,
+      message: "User successfully logged out",
+    });
+  } catch (err) {
+    console.log(err);
     res.status(500).json({
       status: "error",
       code: 500,
