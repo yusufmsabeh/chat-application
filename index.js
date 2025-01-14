@@ -5,6 +5,8 @@ dotenv.config();
 const express = require("express");
 const connection = require("./database/config");
 const authRouter = require("./routes/auth");
+const chatRouter = require("./routes/message");
+const groupRouter = require("./routes/group");
 const multer = require("multer");
 const upload = multer();
 
@@ -15,7 +17,8 @@ app.use(upload.any());
 
 // public endpoints
 app.use("/auth", authRouter);
-
+app.use("/chatting", chatRouter);
+app.use("/group", groupRouter);
 connection.authenticate().then(() => {
   connection.sync().then(() => {
     app.listen(PORT, "localhost", () =>
