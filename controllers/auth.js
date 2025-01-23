@@ -57,13 +57,16 @@ exports.postSignup = async (req, res) => {
 
 exports.postLogin = async (req, res) => {
   try {
-    const { email, password } = req.body || {};
-    if (!email || !password)
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((error) => error.msg);
       return res.status(400).json({
         status: "error",
         code: 400,
-        message: "All fields are required",
+        message: errorMessages,
       });
+    }
+    const { email, password } = matchedData(req);
     const user = await User.findOne({
       where: {
         email: email,
