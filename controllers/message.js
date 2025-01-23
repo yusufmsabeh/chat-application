@@ -1,15 +1,18 @@
-const Group = require("../models/group");
 const Message = require("../models/message");
 const User = require("../models/user");
+const { validationResult, matchedData } = require("express-validator");
 exports.postPrivateMessage = async (req, res) => {
   try {
-    const { content, receiver_id } = req.body;
-    if (!content || !receiver_id)
-      return res.status(401).json({
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((error) => error.msg);
+      return res.status(400).json({
         status: "error",
-        code: 401,
-        message: "All fields required (content and receiver_id) ",
+        code: 400,
+        message: errorMessages,
       });
+    }
+    const { content, receiver_id } = matchedData(req);
     const receiver = await User.findByPk(receiver_id);
     if (!receiver)
       return res.status(400).json({
