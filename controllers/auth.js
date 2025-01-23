@@ -84,7 +84,6 @@ exports.postLogin = async (req, res) => {
         code: 401,
         message: "invalid email or password",
       });
-    console.log(user);
     const token = await getOrCreateSession(user.ID);
 
     res.status(200).json({
