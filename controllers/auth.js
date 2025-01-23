@@ -1,18 +1,23 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const postSignupSchema = require("../validation/post-signup-validator");
 const {
   getOrCreateSession,
   deleteSession,
 } = require("../services/sessions_management");
+const { validationResult, matchedData } = require("express-validator");
 exports.postSignup = async (req, res) => {
   try {
-    const { name, email, password } = req.body || {};
-    if (!name || !email || !password)
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((error) => error.msg);
       return res.status(400).json({
         status: "error",
         code: 400,
-        message: "All fields are required",
+        message: errorMessages,
       });
+    }
+    const { name, email, password } = matchedData(req);
     const isExists =
       (await User.findOne({
         where: {
