@@ -1,8 +1,10 @@
 const { Router } = require("express");
 const { postGroup, postJoinGroup } = require("../controllers/group");
 const authenticationMiddleware = require("../middlewares/sessionMiddleware");
+const postGroupSchema = require("../validation/post-group-validator");
+const { checkSchema } = require("express-validator");
 const router = new Router();
 router.use(authenticationMiddleware);
-router.post("/", postGroup);
+router.post("/", checkSchema(postGroupSchema), postGroup);
 router.post("/join", postJoinGroup);
 module.exports = router;

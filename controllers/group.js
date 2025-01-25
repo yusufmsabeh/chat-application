@@ -1,14 +1,18 @@
 const Group = require("../models/group");
+const { validationResult, matchedData } = require("express-validator");
 
 exports.postGroup = async (req, res) => {
   try {
-    const { name } = req.body;
-    if (!name)
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((error) => error.msg);
       return res.status(400).json({
         status: "error",
         code: 400,
-        message: `Name is required`,
+        message: errorMessages,
       });
+    }
+    const { name } = matchedData(req);
     const group = await req.user.createGroup({
       name: name,
     });
@@ -25,7 +29,6 @@ exports.postGroup = async (req, res) => {
         },
       },
     });
-    console.log(typeof group, "\n", group);
   } catch (e) {
     console.error(e);
     res.status(500).json({
