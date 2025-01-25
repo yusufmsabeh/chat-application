@@ -41,14 +41,16 @@ exports.postGroup = async (req, res) => {
 
 exports.postJoinGroup = async (req, res) => {
   try {
-    const { group_id } = req.body;
-    if (!group_id)
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((error) => error.msg);
       return res.status(400).json({
         status: "error",
         code: 400,
-        message: "All fields are required (group_id) ",
+        message: errorMessages,
       });
-
+    }
+    const { group_id } = matchedData(req);
     const group = await Group.findByPk(group_id);
     if (!group)
       return res.status(404).json({
