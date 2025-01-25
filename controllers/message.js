@@ -42,13 +42,16 @@ exports.postPrivateMessage = async (req, res) => {
 
 exports.getPrivateMessage = async (req, res) => {
   try {
-    const { user_id } = req.query;
-    if (!user_id)
-      return res.status(401).json({
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((error) => error.msg);
+      return res.status(400).json({
         status: "error",
-        code: 401,
-        message: "user_id not found",
+        code: 400,
+        message: errorMessages,
       });
+    }
+    const { user_id } = matchedData(req);
     const user = await User.findByPk(user_id);
     if (!user)
       return res.status(404).json({
