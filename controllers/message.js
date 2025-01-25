@@ -82,13 +82,16 @@ exports.getPrivateMessage = async (req, res) => {
 
 module.exports.postGroupMessage = async (req, res) => {
   try {
-    const { content, group_id } = req.body;
-    if (!content || !group_id)
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMessages = errors.array().map((error) => error.msg);
       return res.status(400).json({
         status: "error",
         code: 400,
-        message: "All fields required (content and group_id) ",
+        message: errorMessages,
       });
+    }
+    const { content, group_id } = matchedData(req);
     const isJoined = await req.user.hasGroup(group_id);
     if (!isJoined)
       return res.status(404).json({
